@@ -55,7 +55,9 @@ public class FileManagerImpl implements FileManager {
                 MAX_SIZE / (1024L * 1024L));
         if (taille > MAX_SIZE) {
             System.out.println("ECHEC");
-            throw new FileSizeExceededException(taille, MAX_SIZE);
+            throw new FileSizeExceededException(
+                    "Taille du fichier (" + taille + " octets) dépasse la limite autorisée (" + MAX_SIZE + " octets)."
+            );
         }
         System.out.println("OK");
 

@@ -19,7 +19,7 @@ public class App {
 
     public static void main(String[] args) {
 
-        FileManager              fileManager = new FileManagerImpl();
+        FileManager fileManager = new FileManagerImpl();
         GestionListeQuestionnaire gestion    = new GestionListeQuestionnaireImpl(fileManager);
         Scanner                  scanner     = new Scanner(System.in);
 

@@ -67,7 +67,7 @@ public class GestionListeQuestionnaireImpl implements GestionListeQuestionnaire 
             throws NoQuestionnaireAvailableException {
 
         if (listeQuestionnaires.isEmpty()) {
-            throw new NoQuestionnaireAvailableException();
+            throw new NoQuestionnaireAvailableException("Le fichier que vous avez implémenté est vide.");
         }
         return Collections.unmodifiableList(listeQuestionnaires);
     }

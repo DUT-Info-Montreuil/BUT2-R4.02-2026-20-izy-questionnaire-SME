@@ -24,7 +24,7 @@ public interface FileManager {
      *
      * @param filePath chemin vers le fichier CSV
      * @return liste de {@link CsvBO}, une entrée par ligne non vide
-     * @throws FichierIntrouvableException        si le fichier est introuvable
+     * @throws FichierIntrouvableException  si le fichier est introuvable
      * @throws FileSizeExceededException    si la taille dépasse la limite autorisée
      * @throws InvalidCSVStructureException si le fichier est vide ou illisible
      */
