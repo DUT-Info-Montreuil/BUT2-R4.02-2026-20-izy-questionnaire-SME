@@ -8,16 +8,17 @@ import java.util.List;
 
 /**
  * Implémentation de test de {@link FileManager} simulant un fichier
- * dont la taille dépasse la limite autorisée (5 Mo).
+ * dont la taille dépasse la limite autorisée.
  *
- * chargerFichier() lève toujours {@link FileSizeExceededException}.
+ * <p>{@code chargerFichier()} lève toujours {@link FileSizeExceededException},
+ * quelle que soit la valeur du chemin passé.
  */
-public class FileManagerTailleDepasseeMock implements FileManager {
+public class FileManagerTailleExcessiveMock implements FileManager {
 
     @Override
     public List<CsvBO> chargerFichier(String filePath) throws FileSizeExceededException {
         throw new FileSizeExceededException(
-                "Taille maximale autorisée dépassée (limite : 5 Mo)."
+                "La taille du fichier dépasse la limite autorisée : " + filePath
         );
     }
 }

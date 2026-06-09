@@ -8,24 +8,17 @@ import java.util.List;
 
 /**
  * Implémentation de test de {@link FileManager} simulant un fichier CSV
- * dont la structure est invalide (séparateur incorrect, colonnes manquantes…).
+ * vide ou de structure invalide (illisible).
  *
- * chargerFichier() lève toujours {@link InvalidCSVStructureException}.
+ * <p>{@code chargerFichier()} lève toujours {@link InvalidCSVStructureException},
+ * quelle que soit la valeur du chemin passé.
  */
 public class FileManagerStructureInvalideMock implements FileManager {
 
-    private final String messageErreur;
-
-    public FileManagerStructureInvalideMock() {
-        this.messageErreur = "Structure du fichier CSV incorrecte (séparateur ou colonnes invalides).";
-    }
-
-    public FileManagerStructureInvalideMock(String messageErreur) {
-        this.messageErreur = messageErreur;
-    }
-
     @Override
     public List<CsvBO> chargerFichier(String filePath) throws InvalidCSVStructureException {
-        throw new InvalidCSVStructureException(messageErreur);
+        throw new InvalidCSVStructureException(
+                "Le fichier CSV est vide ou sa structure est invalide : " + filePath
+        );
     }
 }
