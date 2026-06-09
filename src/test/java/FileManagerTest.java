@@ -1,17 +1,17 @@
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.entities.mos.CsvBO;
-import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.mock.FileManagerFichierInexistantMock;
-import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.mock.FileManagerStructureInvalideMock;
-import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.mock.FileManagerTailleExcessiveMock;
-import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.mock.FileManagerValideMock;
-import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.interfaces.FileManager;
+import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.impls.FileManagerImpl;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.utils.exceptions.FichierIntrouvableException;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.utils.exceptions.FileSizeExceededException;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.utils.exceptions.InvalidCSVStructureException;
 
-
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -20,34 +20,33 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-/**
- * Tests du contrat de l'interface {@link FileManager}, vérifié via ses mocks.
- *
- * <p>On ne teste pas une implémentation réelle ici, mais le comportement
- * attendu de chaque scénario : chargement réussi et trois cas d'erreur.
- */
 class FileManagerTest {
+
+    @TempDir
+    Path tempDir;
+
+    private final FileManagerImpl fileManager = new FileManagerImpl();
+
+    private String cheminRessource(String nom) throws Exception {
+        return Paths.get(getClass().getClassLoader().getResource(nom).toURI()).toString();
+    }
 
     @Test
     @DisplayName("chargerFichier() retourne une liste non nulle et non vide")
     void chargerFichier_retourneListeNonVide() throws Exception {
-        FileManager fileManager = new FileManagerValideMock();
-
-        List<CsvBO> lignes = fileManager.chargerFichier("peu_importe.csv");
+        List<CsvBO> lignes = fileManager.chargerFichier(cheminRessource("test_valide.csv"));
 
         assertAll(
                 () -> assertNotNull(lignes, "La liste ne doit pas être null."),
                 () -> assertFalse(lignes.isEmpty(), "La liste ne doit pas être vide."),
-                () -> assertEquals(4, lignes.size(), "Le mock fournit 4 lignes.")
+                () -> assertEquals(4, lignes.size(), "Le fichier de test fournit 4 lignes.")
         );
     }
 
     @Test
     @DisplayName("chargerFichier() mappe correctement les colonnes de la première ligne")
     void chargerFichier_mappeLesColonnes() throws Exception {
-        FileManager fileManager = new FileManagerValideMock();
-
-        CsvBO premiere = fileManager.chargerFichier("peu_importe.csv").get(0);
+        CsvBO premiere = fileManager.chargerFichier(cheminRessource("test_valide.csv")).get(0);
 
         assertAll(
                 () -> assertEquals("1", premiere.getIdQuestionnaire()),
@@ -60,37 +59,41 @@ class FileManagerTest {
         );
     }
 
-
     @Test
-    @DisplayName("chargerFichier() lève FileNotFoundException si le fichier est introuvable")
+    @DisplayName("chargerFichier() lève FichierIntrouvableException si le fichier est introuvable")
     void chargerFichier_fichierInexistant() {
-        FileManager fileManager = new FileManagerFichierInexistantMock();
-
         assertThrows(
                 FichierIntrouvableException.class,
-                () -> fileManager.chargerFichier("introuvable.csv")
+                () -> fileManager.chargerFichier("fichier_qui_nexiste_pas.csv")
         );
     }
 
     @Test
     @DisplayName("chargerFichier() lève FileSizeExceededException si le fichier est trop volumineux")
-    void chargerFichier_tailleExcessive() {
-        FileManager fileManager = new FileManagerTailleExcessiveMock();
+    void chargerFichier_tailleExcessive() throws Exception {
+        Path grosFile = tempDir.resolve("trop_gros.csv");
+        byte[] chunk = new byte[1024 * 1024]; // 1 Mo
+        try (OutputStream os = Files.newOutputStream(grosFile)) {
+            for (int i = 0; i < 6; i++) {
+                os.write(chunk); // 6 Mo au total > limite de 5 Mo
+            }
+        }
 
         assertThrows(
                 FileSizeExceededException.class,
-                () -> fileManager.chargerFichier("trop_gros.csv")
+                () -> fileManager.chargerFichier(grosFile.toString())
         );
     }
 
     @Test
-    @DisplayName("chargerFichier() lève InvalidCSVStructureException si le CSV est invalide")
-    void chargerFichier_structureInvalide() {
-        FileManager fileManager = new FileManagerStructureInvalideMock();
+    @DisplayName("chargerFichier() lève InvalidCSVStructureException si le CSV est vide")
+    void chargerFichier_structureInvalide() throws Exception {
+        Path videFile = tempDir.resolve("vide.csv");
+        Files.createFile(videFile);
 
         assertThrows(
                 InvalidCSVStructureException.class,
-                () -> fileManager.chargerFichier("vide.csv")
+                () -> fileManager.chargerFichier(videFile.toString())
         );
     }
 }
