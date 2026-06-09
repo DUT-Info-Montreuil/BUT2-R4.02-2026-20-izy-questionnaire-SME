@@ -113,12 +113,8 @@ public class FileManagerImpl implements FileManager {
      * @throws InvalidCSVStructureException si le fichier est vide ou illisible
      */
     private List<CsvBO> parse(String filePath) throws InvalidCSVStructureException {
-        try {
-            InputStreamReader isr = new InputStreamReader(
-                    new FileInputStream(filePath), StandardCharsets.UTF_8
-            );
-
-            BufferedReader bufferedReader = new BufferedReader(isr);
+        try (BufferedReader bufferedReader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8))) {
 
             // Suppression du BOM (\uFEFF) si présent
             bufferedReader.mark(1);

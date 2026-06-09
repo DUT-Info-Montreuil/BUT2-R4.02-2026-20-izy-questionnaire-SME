@@ -14,7 +14,4 @@ public class FileSizeExceededException extends Exception {
         this.tailleFichier = tailleFichier;
         this.tailleMax     = tailleMax;
     }
-
-    public long getTailleFichier() { return tailleFichier; }
-    public long getTailleMax()     { return tailleMax; }
 }

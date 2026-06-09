@@ -2,6 +2,7 @@ package org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.entities.mappers;
 
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.entities.dtos.QuestionDTO;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.entities.mos.CsvBO;
+import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.utils.enums.Difficulte;
 
 import java.util.Objects;
 
@@ -11,10 +12,12 @@ import java.util.Objects;
  * <p>Le {@link CsvBO} est déjà en mémoire — ce mapper ne lit jamais
  * le fichier CSV. Il transforme uniquement les données reçues.
  */
+
 public final class CsvBOToQuestionMapper {
     private CsvBOToQuestionMapper() {
         throw new UnsupportedOperationException("Classe utilitaire.");
     }
+
     /**
      * Convertit un {@link CsvBO} en {@link QuestionDTO}.
      *
@@ -31,7 +34,7 @@ public final class CsvBOToQuestionMapper {
                 csvBO.getLangue().trim(),
                 csvBO.getLibelleQuestion().trim(),
                 csvBO.getReponse().trim(),
-                Integer.parseInt(csvBO.getDifficulte().trim()),
+                Difficulte.fromInt(Integer.parseInt(csvBO.getDifficulte().trim())),
                 csvBO.getExplication().trim(),
                 csvBO.getReference().trim()
         );

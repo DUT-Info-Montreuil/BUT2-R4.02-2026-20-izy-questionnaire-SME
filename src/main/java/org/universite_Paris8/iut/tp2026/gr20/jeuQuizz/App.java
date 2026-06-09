@@ -3,6 +3,8 @@ package org.universite_Paris8.iut.tp2026.gr20.jeuQuizz;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.entities.dtos.QuestionnaireDTO;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.impls.FileManagerImpl;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.impls.GestionListeQuestionnaireImpl;
+import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.interfaces.FileManager;
+import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.interfaces.GestionListeQuestionnaire;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.utils.exceptions.FichierIntrouvableException;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.utils.exceptions.FileSizeExceededException;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.utils.exceptions.InvalidCSVStructureException;
@@ -17,9 +19,9 @@ public class App {
 
     public static void main(String[] args) {
 
-        FileManagerImpl                fileManager  = new FileManagerImpl();
-        GestionListeQuestionnaireImpl  gestion      = new GestionListeQuestionnaireImpl(fileManager);
-        Scanner                        scanner      = new Scanner(System.in);
+        FileManager              fileManager = new FileManagerImpl();
+        GestionListeQuestionnaire gestion    = new GestionListeQuestionnaireImpl(fileManager);
+        Scanner                  scanner     = new Scanner(System.in);
 
         System.out.println("=== Jeu du Quizz — Système Questionnaire ===");
         System.out.println("Fichiers CSV attendus dans : " + DOSSIER_RESSOURCES);
@@ -48,20 +50,17 @@ public class App {
         System.out.print("Votre choix : ");
     }
 
-    private static void demanderEtCharger(GestionListeQuestionnaireImpl gestion,
+    private static void demanderEtCharger(GestionListeQuestionnaire gestion,
                                           Scanner scanner) {
         System.out.print("\nNom du fichier CSV : ");
         String chemin = DOSSIER_RESSOURCES + scanner.nextLine().trim();
         try {
             gestion.charger(chemin);
-        } catch (FileSizeExceededException | InvalidCSVStructureException e) {
+        } catch (FichierIntrouvableException | FileSizeExceededException | InvalidCSVStructureException e) {
             System.err.println("[ERREUR] " + e.getMessage());
-        } catch (FichierIntrouvableException e) {
-            throw new RuntimeException(e);
         }
     }
-
-    private static void afficherListeQuestionnaires(GestionListeQuestionnaireImpl gestion) {
+    private static void afficherListeQuestionnaires(GestionListeQuestionnaire gestion) {
         try {
             List<QuestionnaireDTO> liste = gestion.fournirListeQuestionnaire();
             System.out.println("\nQuestionnaires disponibles :");

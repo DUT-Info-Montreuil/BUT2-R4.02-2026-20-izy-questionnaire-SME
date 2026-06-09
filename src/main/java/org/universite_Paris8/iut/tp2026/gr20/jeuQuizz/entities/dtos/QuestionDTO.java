@@ -1,5 +1,7 @@
 package org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.entities.dtos;
 
+import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.utils.enums.Difficulte;
+
 import java.util.Objects;
 
 /**
@@ -11,13 +13,13 @@ import java.util.Objects;
 
 public class QuestionDTO {
 
-    private int    numQuestion;
-    private String langue;
-    private String libelleQuestion;
-    private String reponse;
-    private int    difficulte;
-    private String explication;
-    private String reference;
+    private int        numQuestion;
+    private String     langue;
+    private String     libelleQuestion;
+    private String     reponse;
+    private Difficulte difficulte;
+    private String     explication;
+    private String     reference;
 
     /** Constructeur no-arg requis par le mapper via réflexion potentielle. */
     public QuestionDTO() {}
@@ -26,7 +28,7 @@ public class QuestionDTO {
      * Constructeur complet — préféré pour l'instanciation explicite.
      */
     public QuestionDTO(int numQuestion, String langue, String libelleQuestion,
-                       String reponse, int difficulte,
+                       String reponse, Difficulte difficulte,
                        String explication, String reference) {
         this.numQuestion     = numQuestion;
         this.langue          = langue;
@@ -39,13 +41,13 @@ public class QuestionDTO {
 
     // ── Getters ────────────────────────────────────────────────────────────────
 
-    public int    getNumQuestion()      { return numQuestion; }
-    public String getLangue()           { return langue; }
-    public String getLibelleQuestion()  { return libelleQuestion; }
-    public String getReponse()          { return reponse; }
-    public int    getDifficulte()       { return difficulte; }
-    public String getExplication()      { return explication; }
-    public String getReference()        { return reference; }
+    public int        getNumQuestion()      { return numQuestion; }
+    public String     getLangue()           { return langue; }
+    public String     getLibelleQuestion()  { return libelleQuestion; }
+    public String     getReponse()          { return reponse; }
+    public Difficulte getDifficulte()       { return difficulte; }
+    public String     getExplication()      { return explication; }
+    public String     getReference()        { return reference; }
 
     // ── Setters ────────────────────────────────────────────────────────────────
 
@@ -53,7 +55,7 @@ public class QuestionDTO {
     public void setLangue(String langue)                    { this.langue = langue; }
     public void setLibelleQuestion(String libelleQuestion)  { this.libelleQuestion = libelleQuestion; }
     public void setReponse(String reponse)                  { this.reponse = reponse; }
-    public void setDifficulte(int difficulte)               { this.difficulte = difficulte; }
+    public void setDifficulte(Difficulte difficulte)        { this.difficulte = difficulte; }
     public void setExplication(String explication)          { this.explication = explication; }
     public void setReference(String reference)              { this.reference = reference; }
 
@@ -63,8 +65,7 @@ public class QuestionDTO {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof QuestionDTO)) return false;
-        QuestionDTO that = (QuestionDTO) o;
+        if (!(o instanceof QuestionDTO that)) return false;
         return numQuestion == that.numQuestion && difficulte == that.difficulte
                 && Objects.equals(langue, that.langue)
                 && Objects.equals(libelleQuestion, that.libelleQuestion)
