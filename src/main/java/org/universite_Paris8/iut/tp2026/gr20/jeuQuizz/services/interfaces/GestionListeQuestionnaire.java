@@ -10,10 +10,5 @@ import java.util.List;
 
 public interface GestionListeQuestionnaire {
 
-    void charger(String filePath)
-            throws FichierIntrouvableException,
-            FileSizeExceededException,
-            InvalidCSVStructureException;
-
     List<QuestionnaireDTO> fournirListeQuestionnaire() throws NoQuestionnaireAvailableException;
 }

@@ -1,6 +1,8 @@
 package org.universite_Paris8.iut.tp2026.gr20.jeuQuizz;
 
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.entities.dtos.QuestionnaireDTO;
+import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.entities.mappers.CsvBOToQuestionnaireMapper;
+import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.entities.mos.CsvBO;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.impls.FileManagerImpl;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.impls.GestionListeQuestionnaireImpl;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.interfaces.FileManager;
@@ -10,6 +12,7 @@ import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.utils.exceptions.FileSizeE
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.utils.exceptions.InvalidCSVStructureException;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.utils.exceptions.NoQuestionnaireAvailableException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -20,13 +23,14 @@ public class App {
     public static void main(String[] args) {
 
         FileManager fileManager = new FileManagerImpl();
-        GestionListeQuestionnaire gestion    = new GestionListeQuestionnaireImpl(fileManager);
-        Scanner                  scanner     = new Scanner(System.in);
+        List<QuestionnaireDTO> questionnaires = new ArrayList<>();
+        GestionListeQuestionnaire gestion = new GestionListeQuestionnaireImpl(questionnaires);
+        Scanner scanner = new Scanner(System.in);
 
         System.out.println("=== Jeu du Quizz — Système Questionnaire ===");
         System.out.println("Fichiers CSV attendus dans : " + DOSSIER_RESSOURCES);
 
-        demanderEtCharger(gestion, scanner);
+        demanderEtCharger(fileManager, questionnaires, scanner);
 
         boolean continuer = true;
         while (continuer) {
@@ -34,7 +38,7 @@ public class App {
             String choix = scanner.nextLine().trim();
             switch (choix) {
                 case "1" -> afficherListeQuestionnaires(gestion);
-                case "2" -> demanderEtCharger(gestion, scanner);
+                case "2" -> demanderEtCharger(fileManager, questionnaires, scanner);
                 case "3" -> { continuer = false; System.out.println("Au revoir !"); }
                 default  -> System.out.println("Choix invalide.");
             }
@@ -50,16 +54,20 @@ public class App {
         System.out.print("Votre choix : ");
     }
 
-    private static void demanderEtCharger(GestionListeQuestionnaire gestion,
+    private static void demanderEtCharger(FileManager fileManager,
+                                          List<QuestionnaireDTO> questionnaires,
                                           Scanner scanner) {
         System.out.print("\nNom du fichier CSV : ");
         String chemin = DOSSIER_RESSOURCES + scanner.nextLine().trim();
         try {
-            gestion.charger(chemin);
+            List<CsvBO> lignes = fileManager.chargerFichier(chemin);
+            questionnaires.clear();
+            questionnaires.addAll(CsvBOToQuestionnaireMapper.map(lignes));
         } catch (FichierIntrouvableException | FileSizeExceededException | InvalidCSVStructureException e) {
             System.err.println("[ERREUR] " + e.getMessage());
         }
     }
+
     private static void afficherListeQuestionnaires(GestionListeQuestionnaire gestion) {
         try {
             List<QuestionnaireDTO> liste = gestion.fournirListeQuestionnaire();

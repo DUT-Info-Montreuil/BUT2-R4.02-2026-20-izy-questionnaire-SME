@@ -19,11 +19,6 @@ import java.util.List;
 public class GestionListeQuestionnaireVideMock implements GestionListeQuestionnaire {
 
     @Override
-    public void charger(String filePath) throws FichierIntrouvableException, FileSizeExceededException, InvalidCSVStructureException {
-
-    }
-
-    @Override
     public List<QuestionnaireDTO> fournirListeQuestionnaire()
             throws NoQuestionnaireAvailableException {
         throw new NoQuestionnaireAvailableException(
