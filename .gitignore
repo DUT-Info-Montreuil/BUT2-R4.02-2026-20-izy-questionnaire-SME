@@ -38,3 +38,5 @@ build/
 .DS_Store
 misc.xml
 .idea
+
+/src/main/resources/questionsQuizz_2025_V1.csv

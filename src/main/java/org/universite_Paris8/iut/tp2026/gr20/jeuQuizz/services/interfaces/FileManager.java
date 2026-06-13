@@ -1,7 +1,7 @@
 package org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.services.interfaces;
 
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.entities.mos.CsvBO;
-import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.utils.exceptions.FileNotFoundException;
+import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.utils.exceptions.FichierIntrouvableException;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.utils.exceptions.FileSizeExceededException;
 import org.universite_Paris8.iut.tp2026.gr20.jeuQuizz.utils.exceptions.InvalidCSVStructureException;
 
@@ -24,12 +24,12 @@ public interface FileManager {
      *
      * @param filePath chemin vers le fichier CSV
      * @return liste de {@link CsvBO}, une entrée par ligne non vide
-     * @throws FileNotFoundException        si le fichier est introuvable
+     * @throws FichierIntrouvableException  si le fichier est introuvable
      * @throws FileSizeExceededException    si la taille dépasse la limite autorisée
      * @throws InvalidCSVStructureException si le fichier est vide ou illisible
      */
     List<CsvBO> chargerFichier(String filePath)
-            throws FileNotFoundException,
+            throws FichierIntrouvableException,
             FileSizeExceededException,
             InvalidCSVStructureException;
 }
